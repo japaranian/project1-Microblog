@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wanderlust</title>
+    <style>
+      #picture {
+        height: 20px;
+        width: 20px;
+      }
+
+      #posts {
+        list-style-type: none;
+      }
+    </style>
+</head>
+<body>
+  <h1>Trending Articles</h1>
+    <div>
+      {{#microposts}}
+        <ul id="posts">
+          <li>{{title}}</li>
+            <li>{{post}}</li>
+            <li><img src='{{image_url}}' id="picture"></li> 
+        </ul>
+      {{/microposts}}
+    </div>
+
+
+  <div>
+    <a href="/micropost/new">Create New Entry</a>  
+  </div>
+
+</body>
+</html>

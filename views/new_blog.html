@@ -6,24 +6,25 @@
 </head>
 
 <body>
-  <form action="/blog" method="POST">
-
-  	<label>Author: </label>
-    <input type="text" author="author" />
-
+  <form action="/micropost" method="POST">
+    <label>Author: </label>
+    <select name="user_id">
+    {{#users}}
+    <option value="{{id}}">{{name}}</option>
+    {{/users}}
+    </select>
   	<label>Title: </label>
-    <input type="text" title="title" />
-
+    <input type="text" name="title" />
+<br>
     <label>Entry: </label>
-    <input type="text" entry="entry" />
-
+    <input type="text" name="entry" />
+<br>
     <label>Tags: </label>
-    <input type="text" tags="tags" />
-
+    <input type="text" name="tags" />
+<br>
     <label>Image: </label>
-    <input type="text" image="image" />
-
-
+    <input type="text" name="image" />
+    <button>Submit</button>
   </form>
 </body>
 </html>
