@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  {{#micropost}}
+<head>
+  <meta charset="UTF-8">
+  <title>Wanderlust</title>
+  <style>
+    #comment {
+      list-style: none
+    }
+
+    #comment_box {
+      border: solid;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>{{title}}</h1>
+    <img src="{{image_url}}" />
+      <p>{{post}}</p>
+        <a href="/user/{{user_id}}">
+          Author
+        </a>
+        <br>
+        <a href="/micropost/{{id}}/edit">
+          Edit Entry
+        </a> 
+        <br>
+        {{#tags}}
+        <a href="/tag/tagname/posts">
+          {{tag_name}}
+        </a>
+        {{/tags}}
+
+        <div id="comment_box">
+          <h2>Comments</h2>
+          {{#comments}}
+            <ul id="comment">
+              {{#user_id}}
+              <li>{{name}}</li>
+              {{/user_id}}
+              <li>{{content}}</li>
+              <li><a href="/comment/{{id}}"> Edit Comment </a></li>
+            </ul>
+          {{/comments}}
+        </div>
+
+      <form action="/comment" method="POST">
+        <select name="user_id">
+        {{#users}}
+        <option value="{{id}}">{{name}}</option>
+        {{/users}}
+        </select>
+        <select name="post_id">
+        {{#posts}}
+        <option value="{{id}}">{{title}}</option>
+        {{/posts}}
+        </select>
+        <label>Comment</label>
+        <input type="text" name="comment" />
+        <button>Submit</button>
+      </form>
+</body>
+  {{/micropost}}
+
+  <a href="/explore"> Go Back to Exploring </a>
+</html>

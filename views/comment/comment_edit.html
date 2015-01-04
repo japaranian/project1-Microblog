@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Wanderlust</title>
+</head>
+
+<body>
+  {{#comments}}
+  <form action="/comment/{{id}}" method="POST">
+  {{/comments}}
+    <input type="hidden" name="_method" value="PUT">
+      <select name="user_id">
+      {{#users}}
+      <option value="{{id}}">{{name}}</option>
+      {{/users}}
+      </select>
+      <select name="post_id">
+      {{#posts}}
+      <option value="{{id}}">{{title}}</option>
+      {{/posts}}
+      </select>
+    {{#comments}}
+      <label>Comment</label>
+      <input type="text" name="comment" value="{{content}}" />
+      {{/comments}}
+      <button>Submit</button>
+  </form>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wanderlust</title>
+</head>
+
+<body>
+  {{#micropost}}
+  <form action="/micropost/{{id}}/edit" method="POST">
+    <input type="hidden" name="_method" value="PUT">
+    <label>Author: </label>
+    <select name="user_id">
+    {{#users}}
+    <option value="{{id}}">{{name}}</option>
+    {{/users}}
+    </select>
+    <label>Title: </label>
+    <input type="text" name="title" value="{{title}}" />
+<br>
+    <label>Entry: </label>
+    <input type="text" name="entry" value="{{post}}" />
+<br>
+    <label>Tags: </label>
+    <input type="text" name="tag" value="{{tag}}"/>
+<br>
+    <label>Image: </label>
+    <input type="text" name="image" value="{{image_url}}" />
+    <button>Save</button>
+  </form>
+  {{/micropost}}
+</body>
+
+<form action"/micropost/{{id}}/edit" method="POST">
+  <input type="hidden" name="_method" value="DELETE">
+  <button> Delete Entry </button>
+</form>
+
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wanderlust</title>
+</head>
+<body>
+  {{#user}}
+  <h1>Articles by {{name}}</h1>
+  {{/user}}
+
+  {{#micropost}}
+  <h2>{{title}}</h2>
+  <div>
+    <a href="/micropost/{{id}}">{{title}}</a>  
+</body>
+  {{/micropost}}
+</html>
