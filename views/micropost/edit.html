@@ -22,7 +22,9 @@
     <input type="text" name="entry" value="{{post}}" />
 <br>
     <label>Tags: </label>
-    <input type="text" name="tag" value="{{tag}}"/>
+    {{#tag}}
+    <input type="text" name="tag" value="{{tag_name}}"/>
+    {{/tag}}
 <br>
     <label>Image: </label>
     <input type="text" name="image" value="{{image_url}}" />

@@ -36,39 +36,61 @@ end
 
 post ('/micropost') do
 	micropost = Micropost.create(title: params["title"], post: params["entry"], user_id: params["user_id"], image_url: params["image"])
-	tags = Tag.create(tag_name: params["tags"])
+	hashtags = params["tags"].split
+		hashtags.each do |tag|
+		tags = Tag.create(tag_name: tag, post_id: micropost["id"])
+		end
 
 	redirect '/explore'
 end
 
 get ('/micropost/:id') do
+	# binding.pry
 	micropost = Micropost.find(params["id"])
 	users = User.all.to_a
-	comments = Comment.select{ |comments| comments["post_id"] == micropost["id"]}
+	comments = Comment.find_by post_id: params["id"]
+		if comments == true then user_name = User.find_by id: comments["user_id"]
+		end
 	posts = Micropost.all.to_a
-	tags = Tag.all.to_a
-	Mustache.render(File.read('./views/micropost/show.html'), {micropost: micropost, users: users, comments: comments, posts: posts, tags: tags})
+	tags = Tag.select{ |hashtags| hashtags["post_id"] == micropost["id"] }
+		tags_cleaned = tags.each do |hashtags|
+			hashtags["tag_name"].gsub(/#/, "")
+		end
+	Mustache.render(File.read('./views/micropost/show.html'), {micropost: micropost, users: users, comments: comments, posts: posts, tags: tags, user_name: user_name, tags_cleaned: tags_cleaned})
 end
 
 get ('/micropost/:id/edit') do
 	micropost = Micropost.find(params["id"])
 	users = User.all.to_a
-	Mustache.render(File.read('./views/micropost/edit.html'), {micropost: micropost, users: users})
+	tag = Tag.select{ |hashtags| hashtags["post_id"] == micropost["id"]}
+	Mustache.render(File.read('./views/micropost/edit.html'), {micropost: micropost, users: users, tag: tag})
 end
 
 put ('/micropost/:id/edit') do
+	binding.pry
 	micropost = Micropost.find(params["id"])
 	micropost.title = params["title"]
 	micropost.post = params["entry"]
 	micropost.image_url = params["image"]
+	
+	tag = Tag.find_by post_id: params["id"]
+	hashtags = params["tags"].split
+		hashtags.each do |tag|
+	tag.tag_name = tag
 
 	micropost.save
+	tag.save
 
 	redirect "/micropost/#{params["id"]}"
 end
 
 delete ('/micropost/:id/edit') do
 	micropost = Micropost.find(params["id"])
+	comment = Comment.find_by post_id: params["id"]
+	tag = Tag.find_by post_id: params["id"]
+
+	comment.destroy
+	tag.destroy
 	micropost.destroy
 
 	redirect '/explore'
@@ -95,4 +117,11 @@ put ('/comment/:id') do
 	comment.save
 
 	redirect "/micropost/#{params["post_id"]}"
+end
+
+get ('/tag/:tags_cleaned') do
+	tag = Tag.find(params["tag_name"])
+	microposts = Micropost.find_by id: tag["post_id"]
+
+	Mustache.render(File.read('./views/micropost/show_tags.html'), {tag: tag, microposts: microposts})
 end

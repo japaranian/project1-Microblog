@@ -5,8 +5,12 @@
   <meta charset="UTF-8">
   <title>Wanderlust</title>
   <style>
+    #tags {
+      list-style: none;
+    }
+
     #comment {
-      list-style: none
+      list-style: none;
     }
 
     #comment_box {
@@ -27,19 +31,22 @@
           Edit Entry
         </a> 
         <br>
-        {{#tags}}
-        <a href="/tag/tagname/posts">
+        
+        <ul id="tags">
+          {{#tags}}
+          <li><a href="/tag/{{tags_cleaned}}">
           {{tag_name}}
-        </a>
+        </a></li>
         {{/tags}}
+      </ul>
 
         <div id="comment_box">
           <h2>Comments</h2>
           {{#comments}}
             <ul id="comment">
-              {{#user_id}}
-              <li>{{name}}</li>
-              {{/user_id}}
+              {{#user_name}}
+              <li>{{name}} says:</li>
+              {{/user_name}}
               <li>{{content}}</li>
               <li><a href="/comment/{{id}}"> Edit Comment </a></li>
             </ul>

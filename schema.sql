@@ -4,6 +4,5 @@ CREATE TABLE microposts(id serial primary key, title varchar(50), post text, use
 
 CREATE TABLE comments(id serial primary key, post_id integer, user_id integer, content text, time date);
 
-CREATE TABLE tags(id serial primary key, tag_name varchar(100));
+CREATE TABLE tags(id serial primary key, tag_name varchar(100), post_id integer);
 
-CREATE TABLE tag_references(tag_id integer, post_id integer);
