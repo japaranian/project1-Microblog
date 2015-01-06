@@ -7,7 +7,10 @@ require './lib/micropost.rb'
 require './lib/user.rb'
 require './lib/comment.rb'
 require './lib/tag.rb'
-require './lib/tag_ref.rb'
+
+after do
+  ActiveRecord::Base.connection.close
+end
 
 get ('/') do
 	File.read('./views/index.html')
@@ -35,62 +38,74 @@ get ('/micropost/new') do
 end
 
 post ('/micropost') do
+	# binding.pry
 	micropost = Micropost.create(title: params["title"], post: params["entry"], user_id: params["user_id"], image_url: params["image"])
-	hashtags = params["tags"].split
-		hashtags.each do |tag|
-		tags = Tag.create(tag_name: tag, post_id: micropost["id"])
+		if params["tags"].split.count == 0
+			tag = Tag.create(tag_name: params["tags"], post_id: micropost["id"])
+		else
+			hashtags = params["tags"].split
+			tags = hashtags.each do |tag|
+			Tag.create(tag_name: tag, post_id: micropost["id"])
+			end
 		end
 
 	redirect '/explore'
 end
 
 get ('/micropost/:id') do
-	# binding.pry
 	micropost = Micropost.find(params["id"])
 	users = User.all.to_a
-	comments = Comment.find_by post_id: params["id"]
-		if comments == true then user_name = User.find_by id: comments["user_id"]
-		end
+	comments = Comment.select{ |comments| comments["post_id"] == micropost["id"]}
 	posts = Micropost.all.to_a
 	tags = Tag.select{ |hashtags| hashtags["post_id"] == micropost["id"] }
-		tags_cleaned = tags.each do |hashtags|
-			hashtags["tag_name"].gsub(/#/, "")
-		end
-	Mustache.render(File.read('./views/micropost/show.html'), {micropost: micropost, users: users, comments: comments, posts: posts, tags: tags, user_name: user_name, tags_cleaned: tags_cleaned})
+	Mustache.render(File.read('./views/micropost/show.html'), {micropost: micropost, users: users, comments: comments, posts: posts, tags: tags, })
 end
 
 get ('/micropost/:id/edit') do
 	micropost = Micropost.find(params["id"])
 	users = User.all.to_a
-	tag = Tag.select{ |hashtags| hashtags["post_id"] == micropost["id"]}
+	tags = Tag.select{ |hashtags| hashtags["post_id"] == micropost["id"]}
+		tag_name = []
+		tags.each do |hashtags|
+			tag_name.push(hashtags.tag_name)
+		end
+		tag = tag_name.join(" ")
 	Mustache.render(File.read('./views/micropost/edit.html'), {micropost: micropost, users: users, tag: tag})
 end
 
 put ('/micropost/:id/edit') do
-	binding.pry
 	micropost = Micropost.find(params["id"])
 	micropost.title = params["title"]
 	micropost.post = params["entry"]
 	micropost.image_url = params["image"]
-	
-	tag = Tag.find_by post_id: params["id"]
-	hashtags = params["tags"].split
-		hashtags.each do |tag|
-	tag.tag_name = tag
+	# binding.pry
+	tags = Tag.where(post_id: micropost.id)
+	tags.each do |tag|
+		tag.destroy
+	end
+
+	new_tags = params["tag"].split
+	new_tags.each do |tag|
+		Tag.create(post_id: micropost["id"], tag_name: tag)
+	end 
 
 	micropost.save
-	tag.save
 
 	redirect "/micropost/#{params["id"]}"
 end
 
 delete ('/micropost/:id/edit') do
+	# binding.pry
 	micropost = Micropost.find(params["id"])
-	comment = Comment.find_by post_id: params["id"]
-	tag = Tag.find_by post_id: params["id"]
-
-	comment.destroy
-	tag.destroy
+	comments = Comment.where post_id: params["id"]
+	comments.each do |comment|
+		comment.destroy
+	end
+	tags = Tag.where(post_id: micropost.id)
+	tags.each do |tag|
+		tag.destroy
+	end
+	
 	micropost.destroy
 
 	redirect '/explore'
@@ -119,9 +134,12 @@ put ('/comment/:id') do
 	redirect "/micropost/#{params["post_id"]}"
 end
 
-get ('/tag/:tags_cleaned') do
-	tag = Tag.find(params["tag_name"])
-	microposts = Micropost.find_by id: tag["post_id"]
+# get ('/tag/:tag_name') do
+# 	tag = Tag.select{ |tags| tags["tag_name"] == params["tag_name"] }
+# 	post_id = []
+# 	tag.each do |hashtags|
+# 		post_id.push(hashtags["post_id"])
+# 	end
 
-	Mustache.render(File.read('./views/micropost/show_tags.html'), {tag: tag, microposts: microposts})
-end
+# 	Mustache.render(File.read('./views/micropost/show_tags.html'), {tag: tag, microposts: microposts})
+# end

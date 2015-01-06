@@ -32,11 +32,12 @@
         </a> 
         <br>
         
+        <p>Tags</p>
         <ul id="tags">
           {{#tags}}
-          <li><a href="/tag/{{tags_cleaned}}">
+          <li>
           {{tag_name}}
-        </a></li>
+      </li>
         {{/tags}}
       </ul>
 
@@ -44,9 +45,6 @@
           <h2>Comments</h2>
           {{#comments}}
             <ul id="comment">
-              {{#user_name}}
-              <li>{{name}} says:</li>
-              {{/user_name}}
               <li>{{content}}</li>
               <li><a href="/comment/{{id}}"> Edit Comment </a></li>
             </ul>
