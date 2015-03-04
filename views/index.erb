@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wanderlust</title>
+
+</head>
+
+<h1 id="title"> Welcome To Your Ultimate Guide To Wanderlusting </h1>
+
+<% if @error %>
+<h1 style='color:red;'>Incorrect email and/or password</h1>
+<% end %>
+
+<body>
+  <form action="/session" method="POST">
+    <label>Email</label>
+      <input type="text" name="email" required="required"/><br>
+    <label>Password:</label>
+      <input type="password" name="password" required="required" /><br>
+    <button>Start Wanderlusting</button>
+  </form>
+
+
+    <p>Don't have an account? Sign up!</p>
+    <form action="/users/new" method="GET">
+      <button id="signup">Sign Up</button>
+    </form>
+
+</body>
+</html>
