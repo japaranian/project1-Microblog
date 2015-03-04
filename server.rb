@@ -7,13 +7,34 @@ require './lib/micropost.rb'
 require './lib/user.rb'
 require './lib/comment.rb'
 require './lib/tag.rb'
+require 'bcrypt'
+require 'HTTParty'
 
 after do
   ActiveRecord::Base.connection.close
 end
 
+configure do
+	enable :sessions
+	set :session_secret, 'secret'
+end
+
 get ('/') do
-	File.read('./views/index.html')
+	erb :index
+end
+
+post ('/session') do
+	user = User.find_by(email: params["email"])
+	if user && user.autheticate(params["password"])
+		session[:user_id] = user.id
+	else
+		@error = true
+		render(:index)
+	end
+end
+
+get ('/uses/new') do
+	
 end
 
 post ('/user') do

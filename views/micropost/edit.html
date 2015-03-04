@@ -14,12 +14,13 @@
     {{#users}}
     <option value="{{id}}">{{name}}</option>
     {{/users}}
+    <option name="new_user">Create New User</option>
     </select>
     <label>Title: </label>
     <input type="text" name="title" value="{{title}}" />
 <br>
     <label>Entry: </label>
-    <input type="text" name="entry" value="{{post}}" />
+    <textarea type="text" name="entry" value="{{post}}" />
 <br>
     <label>Tags: </label>
 <!--     {{#tag}}
