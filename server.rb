@@ -27,18 +27,24 @@ post ('/session') do
 	user = User.find_by(email: params["email"])
 	if user && user.autheticate(params["password"])
 		session[:user_id] = user.id
+		redirect '/explore'
 	else
 		@error = true
 		render(:index)
 	end
 end
 
-get ('/uses/new') do
-	
+delete ('/session') do
+	reset_session
+	redirect_to "/"
 end
 
-post ('/user') do
-	user = User.create(name: params["name"], email: params["email"] )
+get ('/users/new') do
+	erb :new_user
+end
+
+post ('/users/create') do
+	user = User.create(fname: params["fname"], lname: params["lname"], email: params["email"], password: params["password"] )
 	redirect '/explore'
 end
 
